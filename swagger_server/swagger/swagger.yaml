@@ -1,0 +1,352 @@
+openapi: 3.0.2
+info:
+  title: userAlert
+  description: api to push user alerts to redis
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/Surya_Ramachandran/userAlert/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /Alert:
+    summary: getalertslist
+    description: used to obtain a list of alerts from the redis db
+    get:
+      summary: obtain alert  list
+      description: get method to obtain all the alerts
+      operationId: alert_get
+      parameters:
+      - name: alertId
+        in: query
+        description: identifier for the alert
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        examples:
+          alertId:
+            value: "12312321"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/alertArray'
+              examples:
+                alertlist:
+                  value:
+                    alerts:
+                    - alertId: some text
+                      info: some text
+                      metaData:
+                        source: some text
+                        channelName: some text
+                      action:
+                        putSiren: true
+                        showmeLater: true
+                        otherActions:
+                        - some text
+                        - some text
+                      link: some text
+                      isAck: true
+                      isMuted: true
+                      isRead: true
+                      isDiscarded: true
+                    - alertId: some text
+                      info: some text
+                      metaData:
+                        source: some text
+                        channelName: some text
+                      action:
+                        putSiren: true
+                        showmeLater: true
+                        otherActions:
+                        - some text
+                        - some text
+                      link: some text
+                      isAck: true
+                      isMuted: true
+                      isRead: true
+                      isDiscarded: true
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    put:
+      summary: update the  alerts
+      description: updates the alerts in the alerts list
+      operationId: alert_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updatealert'
+            examples:
+              updatealert:
+                value:
+                  id: some text
+                  info: some text
+                  isAck: true
+                  isRead: true
+                  isDiscarded: true
+                  isMuted: true
+                  metaData:
+                    source: some text
+                    channelName: some text
+                  action:
+                    putSiren: true
+                    showmeLater: true
+                    otherActions:
+                    - some text
+                    - some text
+        required: true
+      responses:
+        "200":
+          description: Success
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    post:
+      summary: add alerts
+      description: 'Adds the alerts into the list '
+      operationId: alert_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/alert'
+            examples:
+              add alerts:
+                value:
+                - alertId: some text
+                  info: some text
+                  metaData:
+                    source: some text
+                    channelName: some text
+                  action:
+                    putSiren: true
+                    showmeLater: true
+                    otherActions:
+                    - some text
+                    - some text
+                  link: some text
+                  isAck: true
+                  isMuted: true
+                  isRead: true
+                  isDiscarded: true
+                - alertId: some text
+                  info: some text
+                  metaData:
+                    source: some text
+                    channelName: some text
+                  action:
+                    putSiren: true
+                    showmeLater: true
+                    otherActions:
+                    - some text
+                    - some text
+                  link: some text
+                  isAck: true
+                  isMuted: true
+                  isRead: true
+                  isDiscarded: true
+        required: true
+      responses:
+        "200":
+          description: Success
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    delete:
+      summary: delete alert
+      description: takes the alert id as feed to remove the alert from the alert list
+      operationId: alert_delete
+      parameters:
+      - name: alertId
+        in: query
+        description: id of the alert need to be removed
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    metaData:
+      required:
+      - channelName
+      - source
+      type: object
+      properties:
+        source:
+          type: string
+          description: 'dscribes where it comes from '
+        channelName:
+          type: string
+          description: channel where it is came from
+      description: 'contains the channel name and the source '
+    action:
+      required:
+      - otherActions
+      - putSiren
+      - showmeLater
+      type: object
+      properties:
+        putSiren:
+          type: boolean
+          description: important alerts
+        showmeLater:
+          type: boolean
+          description: intented to show the alerts later
+        otherActions:
+          type: array
+          description: any other events
+          items:
+            type: string
+      description: 'contains some actions '
+      example:
+        putSiren: true
+        showmeLater: true
+        otherActions:
+        - some text
+        - some text
+    alert:
+      required:
+      - action
+      - alertId
+      - info
+      - isAck
+      - isDiscarded
+      - isMuted
+      - isRead
+      - link
+      - metaData
+      type: object
+      properties:
+        alertId:
+          type: string
+          description: identifier for alerts
+        info:
+          type: string
+          description: 'information of the alert '
+        metaData:
+          $ref: '#/components/schemas/metaData'
+        action:
+          $ref: '#/components/schemas/action'
+        link:
+          type: string
+          description: link to the interface
+        isAck:
+          type: boolean
+          description: 'acknowledged or not '
+        isMuted:
+          type: boolean
+          description: whether the alert is muted or not
+        isRead:
+          type: boolean
+          description: 'it is readed by the user or not '
+        isDiscarded:
+          type: boolean
+          description: 'discarded or not '
+      description: user alert sing;e object
+      example:
+        alertId: some text
+        info: some text
+        metaData:
+          source: some text
+          channelName: some text
+        action:
+          putSiren: true
+          showmeLater: true
+          otherActions:
+          - some text
+          - some text
+        link: some text
+        isAck: true
+        isMuted: true
+        isRead: true
+        isDiscarded: true
+    alertArray:
+      required:
+      - alerts
+      type: object
+      properties:
+        alerts:
+          type: array
+          description: contains all the array
+          items:
+            $ref: '#/components/schemas/alert'
+      description: array of alerts
+      example:
+        alerts:
+        - alertId: some text
+          info: some text
+          metaData:
+            source: some text
+            channelName: some text
+          action:
+            putSiren: true
+            showmeLater: true
+            otherActions:
+            - some text
+            - some text
+          link: some text
+          isAck: true
+          isMuted: true
+          isRead: true
+          isDiscarded: true
+        - alertId: some text
+          info: some text
+          metaData:
+            source: some text
+            channelName: some text
+          action:
+            putSiren: true
+            showmeLater: true
+            otherActions:
+            - some text
+            - some text
+          link: some text
+          isAck: true
+          isMuted: true
+          isRead: true
+          isDiscarded: true
+    updatealert:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: id of the alert
+        info:
+          type: string
+          description: info of the alert
+        isAck:
+          type: boolean
+          description: acknowlegement
+        isRead:
+          type: boolean
+          description: readed or not
+        isDiscarded:
+          type: boolean
+          description: 'is it discarded or not '
+        isMuted:
+          type: boolean
+          description: 'whether muted or not '
+        metaData:
+          $ref: '#/components/schemas/metaData'
+        action:
+          $ref: '#/components/schemas/action'
+      description: updates alerts data
+    alertID:
+      required:
+      - alertId
+      type: object
+      properties:
+        alertId:
+          type: string
+      description: id of the alert
+      example:
+        alertId: "234234334343"
+
